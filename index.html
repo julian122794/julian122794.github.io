@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfumería Elegante - Tienda Online</title>
+    <style>
+        :root {
+            --color-primary: #6a0dad;
+            --color-secondary: #f3e6ff;
+            --color-dark: #343a40;
+            --color-whatsapp: #25d366;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            padding-top: 56px;
+            background-color: #f8f9fa;
+        }
+        
+        /* Navbar */
+        .navbar-perfume {
+            background-color: var(--color-primary) !important;
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+        }
+        
+        /* Hero Banner */
+        .hero-banner {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('./img//Perfumes_masculinos_navidad.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            margin-bottom: 30px;
+        }
+        
+        /* Product Cards */
+        .product-card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-img {
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .product-price {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+        
+        .btn-primary {
+            background-color: var(--color-primary);
+            border: none;
+        }
+        
+        /* WhatsApp Button */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: var(--color-whatsapp);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-banner {
+                padding: 60px 0;
+            }
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                right: 20px;
+                font-size: 25px;
+            }
+        }
+    </style>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-perfume fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-spray-can me-2"></i>Perfumería Elegante
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#"><i class="fas fa-home me-1"></i> Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#products"><i class="fas fa-store me-1"></i> Productos</a>
+                    </li>
+                    <li class="nav-item position-relative">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
+                            <i class="fas fa-shopping-cart me-1"></i> Carrito
+                            <span class="cart-count" id="cartCounter">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <header class="hero-banner text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">Fragancias Exclusivas</h1>
+            <p class="lead mb-4">Descubre la esencia de la elegancia</p>
+            <a href="#products" class="btn btn-primary btn-lg px-4">
+                <i class="fas fa-shopping-bag me-2"></i>Ver Colección
+            </a>
+        </div>
+    </header>
+
+    <!-- Product Section -->
+    <section id="products" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Perfumes en los que nos inspiramos.</h2>
+            <div class="row" id="productContainer">
+                <!-- Products will be loaded here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-shopping-cart me-2"></i>Tu Carrito</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="cartItems">
+                        <div class="text-center py-4" id="emptyCart">
+                            <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
+                            <p>Tu carrito está vacío</p>
+                        </div>
+                    </div>
+                    <div class="d-none" id="cartFull">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5>Total:</h5>
+                            <h4 id="cartTotal">$0</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Seguir Comprando</button>
+                    <button type="button" class="btn btn-primary" id="checkoutBtn">
+                        <i class="fab fa-whatsapp me-2"></i>Completar por WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/573022156015?text=Hola%20Perfumería%20Elegante,%20quiero%20más%20información" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p class="mb-0">© 2023 Perfumería Elegante. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample product data
+            const products = [
+                {
+                    id: 1,
+                    name: "Eros",
+                    description: "Perfume masculino con notas de madera y especias",
+                    price: 249900,
+                    image: "./img/eros.webp",
+                    category: "masculino"
+                },
+                {
+                    id: 2,
+                    name: "one million",
+                    description: "Fragancia Masculina con esencia de flores silvestres",
+                    price: 219900,
+                    image: "./img/one million.webp",
+                    category: "femenino"
+                },
+                {
+                    id: 3,
+                    name: "Savage",
+                    description: "Perfume femenina con notas cítricas y frescas",
+                    price: 199900,
+                     image: "./img/savage.webp",
+                    category: "unisex"
+                },
+                {
+                    id: 4,
+                    name: "Versage A",
+                    description: "Fragancia intensa con esencia de oud y ámbar",
+                    price: 289900,
+                     image: "./img/versage a.jpeg",
+                    category: "masculino"
+                },
+                 {
+                    id: 4,
+                    name: "Oud Mystique",
+                    description: "Fragancia intensa con esencia de oud y ámbar",
+                    price: 289900,
+                     image: "./img/images.jpeg",
+                  category: "masculino"
+                },
+                 {
+                    id: 4,
+                    name: "Oud Mystique",
+                    description: "Fragancia intensa con esencia de oud y ámbar",
+                    price: 289900,
+                    image: "./img/jgu h.webp",
+                    category: "masculino"
+                },
+                 {
+                    id: 4,
+                    name: "Oud Mystique",
+                    description: "Fragancia intensa con esencia de oud y ámbar",
+                    price: 289900,
+                     image: "./img/magnat.webp",
+                    category: "masculino"
+                }, {
+                    id: 4,
+                    name: "Oud Mystique",
+                    description: "Fragancia intensa con esencia de oud y ámbar",
+                    price: 289900,
+                     image: "./img/tomy.webp",
+                   category: "masculino"
+                },
+                
+            ];
+
+            // Cart functionality
+            let cart = [];
+            const productContainer = document.getElementById('productContainer');
+            const cartItems = document.getElementById('cartItems');
+            const emptyCart = document.getElementById('emptyCart');
+            const cartFull = document.getElementById('cartFull');
+            const cartTotal = document.getElementById('cartTotal');
+            const cartCounter = document.getElementById('cartCounter');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+            // Display products
+            function displayProducts() {
+                productContainer.innerHTML = '';
+                
+                products.forEach(product => {
+                    const productCard = `
+                        <div class="col-md-6 col-lg-3 mb-4">
+                            <div class="card product-card h-100">
+                                <img src="${product.image}" class="card-img-top product-img" alt="${product.name}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${product.name}</h5>
+                                    <p class="card-text">${product.description}</p>
+                                    <p class="product-price">$${product.price.toLocaleString('es-CO')}</p>
+                                    <button class="btn btn-primary btn-sm btn-add-to-cart" data-id="${product.id}">
+                                        <i class="fas fa-cart-plus me-1"></i>Añadir al carrito
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    productContainer.innerHTML += productCard;
+                });
+
+                // Add event listeners to buttons
+                document.querySelectorAll('.btn-add-to-cart').forEach(button => {
+                    button.addEventListener('click', addToCart);
+                });
+            }
+
+            // Add to cart function
+            function addToCart(e) {
+                const productId = parseInt(e.target.getAttribute('data-id'));
+                const product = products.find(p => p.id === productId);
+                
+                // Check if product already in cart
+                const existingItem = cart.find(item => item.id === productId);
+                
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    cart.push({
+                        ...product,
+                        quantity: 1
+                    });
+                }
+                
+                updateCart();
+                
+                // Show notification
+                const toast = document.createElement('div');
+                toast.classList.add('position-fixed', 'bottom-0', 'end-0', 'p-3');
+                toast.style.zIndex = '11';
+                toast.innerHTML = `
+                    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header bg-primary text-white">
+                            <strong class="me-auto">¡Producto añadido!</strong>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            ${product.name} fue añadido al carrito
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(toast);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }
+
+            // Update cart display
+            function updateCart() {
+                // Update counter
+                const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+                cartCounter.textContent = totalItems;
+                
+                // Show/hide empty/full cart
+                if (cart.length === 0) {
+                    emptyCart.classList.remove('d-none');
+                    cartFull.classList.add('d-none');
+                } else {
+                    emptyCart.classList.add('d-none');
+                    cartFull.classList.remove('d-none');
+                    
+                    // Update cart items
+                    cartItems.innerHTML = '';
+                    
+                    cart.forEach(item => {
+                        const itemHTML = `
+                            <div class="row mb-3 align-items-center">
+                                <div class="col-3 col-md-2">
+                                    <img src="${item.image}" class="img-thumbnail" alt="${item.name}">
+                                </div>
+                                <div class="col-5 col-md-6">
+                                    <h6>${item.name}</h6>
+                                    <small class="text-muted">$${item.price.toLocaleString('es-CO')} c/u</small>
+                                </div>
+                                <div class="col-2">
+                                    <div class="input-group input-group-sm">
+                                        <button class="btn btn-outline-secondary btn-decrease" data-id="${item.id}">-</button>
+                                        <input type="text" class="form-control text-center" value="${item.quantity}" readonly>
+                                        <button class="btn btn-outline-secondary btn-increase" data-id="${item.id}">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-2 text-end">
+                                    <strong>$${(item.price * item.quantity).toLocaleString('es-CO')}</strong>
+                                    <button class="btn btn-link text-danger btn-remove" data-id="${item.id}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        cartItems.innerHTML += itemHTML;
+                    });
+                    
+                    // Update total
+                    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                    cartTotal.textContent = `$${total.toLocaleString('es-CO')}`;
+                    
+                    // Add event listeners
+                    document.querySelectorAll('.btn-decrease').forEach(btn => {
+                        btn.addEventListener('click', decreaseQuantity);
+                    });
+                    
+                    document.querySelectorAll('.btn-increase').forEach(btn => {
+                        btn.addEventListener('click', increaseQuantity);
+                    });
+                    
+                    document.querySelectorAll('.btn-remove').forEach(btn => {
+                        btn.addEventListener('click', removeItem);
+                    });
+                }
+            }
+
+            // Cart item functions
+            function decreaseQuantity(e) {
+                const id = parseInt(e.target.getAttribute('data-id'));
+                const item = cart.find(item => item.id === id);
+                
+                if (item.quantity > 1) {
+                    item.quantity--;
+                } else {
+                    cart = cart.filter(item => item.id !== id);
+                }
+                
+                updateCart();
+            }
+
+            function increaseQuantity(e) {
+                const id = parseInt(e.target.getAttribute('data-id'));
+                const item = cart.find(item => item.id === id);
+                item.quantity++;
+                updateCart();
+            }
+
+            function removeItem(e) {
+                const id = parseInt(e.target.getAttribute('data-id'));
+                cart = cart.filter(item => item.id !== id);
+                updateCart();
+            }
+
+            // Checkout function
+            checkoutBtn.addEventListener('click', function() {
+                if (cart.length === 0) return;
+                
+                // Create WhatsApp message
+                let message = "Hola Perfumería Elegante, quiero comprar:%0A%0A";
+                
+                cart.forEach(item => {
+                    message += `- ${item.name} (${item.quantity} x $${item.price.toLocaleString('es-CO')})%0A`;
+                });
+                
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                message += `%0ATotal: $${total.toLocaleString('es-CO')}%0A%0AMis datos:%0ANombre: [COMPLETAR]%0ADirección: [COMPLETAR]%0ATeléfono: [COMPLETAR]`;
+                
+                // Open WhatsApp
+                window.open(`https://wa.me/573123456789?text=${message}`, '_blank');
+                
+                // Close modal and clear cart
+                const modal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
+                modal.hide();
+                cart = [];
+                updateCart();
+            });
+
+            // Initialize
+            displayProducts();
+        });
+    </script>
+</body>
+</html>
