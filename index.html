@@ -206,6 +206,17 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
+    <!-- Formulario oculto para FormSubmit -->
+    <form id="emailForm" action="https://formsubmit.co/juliandavid40@live.com" method="POST" style="display: none;">
+        <input type="hidden" name="_subject" value="Nuevo pedido - Perfumería Elegante">
+        <input type="hidden" name="_autoresponse" value="Gracias por tu pedido. Pronto nos contactaremos contigo.">
+        <input type="hidden" name="_template" value="table">
+        <input type="text" name="_honey" style="display:none"> <!-- Anti-spam -->
+        <input type="hidden" name="pedido" id="formPedido">
+        <input type="hidden" name="total" id="formTotal">
+        <input type="hidden" name="_next" value="https://tusitio.com/gracias.html"> <!-- Opcional: Página de confirmación -->
+    </form>
+
     <!-- Footer -->
     <footer class="bg-dark text-white py-4">
         <div class="container text-center">
@@ -296,6 +307,9 @@
             const cartTotal = document.getElementById('cartTotal');
             const cartCounter = document.getElementById('cartCounter');
             const checkoutBtn = document.getElementById('checkoutBtn');
+            const formPedido = document.getElementById('formPedido');
+            const formTotal = document.getElementById('formTotal');
+            const emailForm = document.getElementById('emailForm');
 
             // Display products
             function displayProducts() {
@@ -466,17 +480,25 @@
                 if (cart.length === 0) return;
                 
                 // Create WhatsApp message
-                let message = "Hola Perfumería Elegante, quiero comprar:%0A%0A";
+                let whatsappMsg = "Hola Perfumería Elegante, quiero comprar:%0A%0A";
+                let emailMsg = "Detalles del pedido:%0A%0A";
                 
                 cart.forEach(item => {
-                    message += `- ${item.name} (${item.quantity} x $${item.price.toLocaleString('es-CO')})%0A`;
+                    whatsappMsg += `- ${item.name} (${item.quantity} x $${item.price.toLocaleString('es-CO')})%0A`;
+                    emailMsg += `- ${item.name} (${item.quantity} x $${item.price.toLocaleString('es-CO')})%0A`;
                 });
                 
                 const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                message += `%0ATotal: $${total.toLocaleString('es-CO')}%0A%0AMis datos:%0ANombre: [COMPLETAR]%0ADirección: [COMPLETAR]%0ATeléfono: [COMPLETAR]`;
+                whatsappMsg += `%0ATotal: $${total.toLocaleString('es-CO')}%0A%0AMis datos:%0ANombre: [COMPLETAR]%0ADirección: [COMPLETAR]%0ATeléfono: [COMPLETAR]`;
+                emailMsg += `%0ATotal: $${total.toLocaleString('es-CO')}`;
+                
+                // Enviar datos al correo via FormSubmit
+                formPedido.value = emailMsg.replace(/%0A/g, '\n');
+                formTotal.value = `$${total.toLocaleString('es-CO')}`;
+                emailForm.submit();
                 
                 // Open WhatsApp
-                window.open(`https://wa.me/573022156015?text=${message}`, '_blank');
+                window.open(`https://wa.me/573022156015?text=${whatsappMsg}`, '_blank');
                 
                 // Close modal and clear cart
                 const modal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
