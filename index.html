@@ -99,6 +99,14 @@
             align-items: center;
             justify-content: center;
         }
+
+        /* Alertas */
+        .alert-position {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+        }
         
         /* Responsive */
         @media (max-width: 768px) {
@@ -206,17 +214,6 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- Formulario oculto para FormSubmit -->
-    <form id="emailForm" action="https://formsubmit.co/juliandavid40@live.com" method="POST" style="display: none;">
-        <input type="hidden" name="_subject" value="Nuevo pedido - Perfumería Elegante">
-        <input type="hidden" name="_autoresponse" value="Gracias por tu pedido. Pronto nos contactaremos contigo.">
-        <input type="hidden" name="_template" value="table">
-        <input type="text" name="_honey" style="display:none"> <!-- Anti-spam -->
-        <input type="hidden" name="pedido" id="formPedido">
-        <input type="hidden" name="total" id="formTotal">
-        <input type="hidden" name="_next" value="https://tusitio.com/gracias.html"> <!-- Opcional: Página de confirmación -->
-    </form>
-
     <!-- Footer -->
     <footer class="bg-dark text-white py-4">
         <div class="container text-center">
@@ -253,7 +250,7 @@
                     name: "Savage",
                     description: "Perfume femenina con notas cítricas y frescas",
                     price: 199900,
-                     image: "./img/savage.webp",
+                    image: "./img/savage.webp",
                     category: "unisex"
                 },
                 {
@@ -261,41 +258,41 @@
                     name: "Versage A",
                     description: "Fragancia intensa con esencia de oud y ámbar",
                     price: 289900,
-                     image: "./img/versage a.jpeg",
+                    image: "./img/versage a.jpeg",
                     category: "masculino"
                 },
-                 {
-                    id: 4,
+                {
+                    id: 5,
                     name: "Oud Mystique",
                     description: "Fragancia intensa con esencia de oud y ámbar",
                     price: 289900,
-                     image: "./img/images.jpeg",
-                  category: "masculino"
+                    image: "./img/images.jpeg",
+                    category: "masculino"
                 },
-                 {
-                    id: 4,
+                {
+                    id: 6,
                     name: "Oud Mystique",
                     description: "Fragancia intensa con esencia de oud y ámbar",
                     price: 289900,
                     image: "./img/jgu h.webp",
                     category: "masculino"
                 },
-                 {
-                    id: 4,
+                {
+                    id: 7,
                     name: "Oud Mystique",
                     description: "Fragancia intensa con esencia de oud y ámbar",
                     price: 289900,
-                     image: "./img/magnat.webp",
+                    image: "./img/magnat.webp",
                     category: "masculino"
-                }, {
-                    id: 4,
+                },
+                {
+                    id: 8,
                     name: "Oud Mystique",
                     description: "Fragancia intensa con esencia de oud y ámbar",
                     price: 289900,
-                     image: "./img/tomy.webp",
-                   category: "masculino"
-                },
-                
+                    image: "./img/tomy.webp",
+                    category: "masculino"
+                }
             ];
 
             // Cart functionality
@@ -307,9 +304,6 @@
             const cartTotal = document.getElementById('cartTotal');
             const cartCounter = document.getElementById('cartCounter');
             const checkoutBtn = document.getElementById('checkoutBtn');
-            const formPedido = document.getElementById('formPedido');
-            const formTotal = document.getElementById('formTotal');
-            const emailForm = document.getElementById('emailForm');
 
             // Display products
             function displayProducts() {
@@ -475,37 +469,117 @@
                 updateCart();
             }
 
-            // Checkout function
-            checkoutBtn.addEventListener('click', function() {
+            // Checkout function - Versión con Google Apps Script
+            checkoutBtn.addEventListener('click', async function() {
                 if (cart.length === 0) return;
                 
-                // Create WhatsApp message
-                let whatsappMsg = "Hola Perfumería Elegante, quiero comprar:%0A%0A";
-                let emailMsg = "Detalles del pedido:%0A%0A";
+                // URL de tu Google Apps Script (REEMPLAZA ESTO CON TU URL)
+                const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGYCGAAe0s5BfjwCrp4NICr6M9p3k8NcFTlhlAtGicRYOjosr93jvuScFWtkj8Hb1ZxQ/exec';
                 
+                // Crear mensaje para WhatsApp
+                let whatsappMsg = "Hola Perfumería Elegante, quiero comprar:%0A%0A";
+                
+                // Crear contenido HTML para el correo
+                let emailHTML = `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                        <h1 style="color: #6a0dad; text-align: center;">Nuevo Pedido Recibido</h1>
+                        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 15px;">
+                            <h3 style="color: #6a0dad; margin-top: 0;">Detalles del Pedido</h3>
+                            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                <thead>
+                                    <tr style="border-bottom: 2px solid #6a0dad;">
+                                        <th style="text-align: left; padding: 10px;">Producto</th>
+                                        <th style="text-align: center; padding: 10px;">Cantidad</th>
+                                        <th style="text-align: right; padding: 10px;">Precio Unitario</th>
+                                        <th style="text-align: right; padding: 10px;">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
+                
+                // Agregar productos al mensaje
                 cart.forEach(item => {
                     whatsappMsg += `- ${item.name} (${item.quantity} x $${item.price.toLocaleString('es-CO')})%0A`;
-                    emailMsg += `- ${item.name} (${item.quantity} x $${item.price.toLocaleString('es-CO')})%0A`;
+                    
+                    emailHTML += `
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 10px;">${item.name}</td>
+                            <td style="text-align: center; padding: 10px;">${item.quantity}</td>
+                            <td style="text-align: right; padding: 10px;">$${item.price.toLocaleString('es-CO')}</td>
+                            <td style="text-align: right; padding: 10px;">$${(item.price * item.quantity).toLocaleString('es-CO')}</td>
+                        </tr>
+                    `;
                 });
                 
                 const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 whatsappMsg += `%0ATotal: $${total.toLocaleString('es-CO')}%0A%0AMis datos:%0ANombre: [COMPLETAR]%0ADirección: [COMPLETAR]%0ATeléfono: [COMPLETAR]`;
-                emailMsg += `%0ATotal: $${total.toLocaleString('es-CO')}`;
                 
-                // Enviar datos al correo via FormSubmit
-                formPedido.value = emailMsg.replace(/%0A/g, '\n');
-                formTotal.value = `$${total.toLocaleString('es-CO')}`;
-                emailForm.submit();
+                emailHTML += `
+                                </tbody>
+                                <tfoot>
+                                    <tr style="font-weight: bold; background-color: #f3e6ff;">
+                                        <td colspan="3" style="text-align: right; padding: 10px;">Total:</td>
+                                        <td style="text-align: right; padding: 10px;">$${total.toLocaleString('es-CO')}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <p><strong>Fecha del pedido:</strong> ${new Date().toLocaleString('es-CO')}</p>
+                        </div>
+                        <p style="text-align: center; margin-top: 20px; color: #777; font-size: 12px;">
+                            Pedido generado automáticamente desde la tienda online de Perfumería Elegante
+                        </p>
+                    </div>
+                `;
                 
-                // Open WhatsApp
+                try {
+                    // Enviar datos a Google Apps Script
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            to: 'juliandavid67890@gmail.com', // Correo destino actualizado
+                            subject: 'Nuevo Pedido - Perfumería Elegante',
+                            body: emailHTML
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    console.log('Correo enviado:', result);
+                    
+                    // Mostrar notificación de éxito
+                    showAlert('success', '¡Pedido completado!', 'Hemos recibido tu pedido correctamente.');
+                } catch (error) {
+                    console.error('Error al enviar el pedido:', error);
+                    showAlert('danger', 'Error', 'Hubo un problema al enviar tu pedido. Por favor contáctanos por WhatsApp.');
+                }
+                
+                // Abrir WhatsApp
                 window.open(`https://wa.me/573022156015?text=${whatsappMsg}`, '_blank');
                 
-                // Close modal and clear cart
+                // Cerrar modal y limpiar carrito
                 const modal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
                 modal.hide();
                 cart = [];
                 updateCart();
             });
+            
+            // Función para mostrar alertas
+            function showAlert(type, title, message) {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+                alertDiv.style.zIndex = '1100';
+                alertDiv.innerHTML = `
+                    <strong>${title}</strong> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.body.appendChild(alertDiv);
+                
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 5000);
+            }
 
             // Initialize
             displayProducts();
